@@ -1,4 +1,4 @@
--- Creates a table with unique users
+-- Creates a table with unique users (adding countries attribute)
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -6,4 +6,3 @@ CREATE TABLE users (
     name VARCHAR(255),
     country CHAR(2) NOT NULL, DEFAULT='US' CHECK(country IN ('US', 'CO','TN'))
 );
-
