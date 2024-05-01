@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-Task 0: Writing strings to redis
-"""
+Task 0: Writing strings to redis """
 import uuid
-from typing import Union
+from typing import Callable, Optional, Union
 
 import redis
 
@@ -22,3 +21,17 @@ class Cache:
         self._redis.set(data_key, data)
 
         return data_key
+
+    def get(
+        self, key: str, fn: Optional[Callable] = None
+    ) -> Union[str, bytes, int, float]:
+        """Retrive stored data"""
+        data = self._redis.get(key)
+        return fn(data) if fn else data
+
+    def get_str(self, key: str) -> str:
+        return self.get(key, str)
+
+    def get_int(self, key: int) -> int:
+        "Retrive stored integer"
+        return self.get(key, int)
