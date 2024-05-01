@@ -1,10 +1,26 @@
 #!/usr/bin/env python3
 """
-Task 0: Writing strings to redis """
+Writing strings to redis 
+"""
+
 import uuid
-from typing import Callable, Optional, Union
+from functools import wraps
+from typing import Any, Callable, Optional, Union
 
 import redis
+
+
+def count_calls(method: Callable) -> Callable:
+    """Increment values"""
+
+    @wraps(method)
+    def wrappper(self, *args, **kwargs) -> Any:
+        """retruns the given method after incrementging its call counter"""
+        key = method.__qualname__
+        self._redis.incr(key)
+        return method(self, *args, **kwargs)
+
+    return wrappper
 
 
 class Cache:
@@ -15,6 +31,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb(True)
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Stores a value in a Redis data storage and returns the key"""
         data_key = str(uuid.uuid4())
